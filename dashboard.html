@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard Utama - LabKom Al Umanaa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: #1565c0;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* GRID MENU SEKARANG 5 KARTU SEJAJAR */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(21, 101, 192, 0.15);
+        }
+
+        /* Variasi Border warna sesuai kategori biar estetik */
+        .card-pc-kbm:hover { border-color: #1565c0; }
+        .card-pc-non:hover { border-color: #34495e; }
+        .card-gd-kbm:hover { border-color: #9b59b6; }
+        .card-gd-non:hover { border-color: #2c3e50; }
+        .card-rekap:hover { border-color: #2ecc71; }
+
+        .menu-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .menu-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .card-pc-kbm h3 { color: #1565c0; }
+        .card-pc-non h3 { color: #34495e; }
+        .card-gd-kbm h3 { color: #9b59b6; }
+        .card-gd-non h3 { color: #2c3e50; }
+        .card-rekap h3 { color: #2ecc71; }
+
+        .menu-card p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .btn-logout {
+            display: block;
+            width: 120px;
+            margin: 50px auto 0 auto;
+            text-align: center;
+            background: #e53935;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-logout:hover {
+            background: #c62828;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>PANEL NAVIGASI UTAMA LABKOM</h1>
+        <p>Pondok Pesantren Modern Al Umanaa</p>
+    </header>
+
+    <div class="container">
+        
+        <p class="welcome-text">Selamat datang di sistem manajemen praktikum. Silakan pilih jalur layanan laboratorium di bawah ini:</p>
+
+        <div class="menu-grid">
+            
+            <!-- JALUR 1: PC KBM -->
+            <a href="booking_pc_kbm.html" class="menu-card card-pc-kbm">
+                <div>
+                    <span class="menu-icon">🏫</span>
+                    <h3>Booking PC (Jalur KBM)</h3>
+                    <p>Khusus praktikum berjadwal sekolah kelas mingguan dan guru bidang studi.</p>
+                </div>
+            </a>
+
+            <!-- JALUR 2: PC NON-KBM -->
+            <a href="booking_pc_nonkbm.html" class="menu-card card-pc-non">
+                <div>
+                    <span class="menu-icon">🌙</span>
+                    <h3>Booking PC (Non-KBM)</h3>
+                    <p>Khusus pengerjaan tugas mandiri santri, ekstrakurikuler, dan sesi malam/subuh.</p>
+                </div>
+            </a>
+
+            <!-- JALUR 3: GADGET KBM -->
+            <a href="booking_gadget_kbm.html" class="menu-card card-gd-kbm">
+                <div>
+                    <span class="menu-icon">💻</span>
+                    <h3>Pinjam Gadget (Jalur KBM)</h3>
+                    <p>Peminjaman borongan Laptop/Chromebook untuk penunjang belajar mengajar di kelas.</p>
+                </div>
+            </a>
+
+            <!-- JALUR 4: GADGET NON-KBM -->
+            <a href="booking_gadget_nonkbm.html" class="menu-card card-gd-non">
+                <div>
+                    <span class="menu-icon">🚀</span>
+                    <h3>Pinjam Gadget (Non-KBM)</h3>
+                    <p>Akses pinjam Laptop/Chromebook mandiri santri di luar jam KBM sekolah.</p>
+                </div>
+            </a>
+
+            <!-- JALUR 5: DATA REKAP -->
+            <a href="data_booking.html" class="menu-card card-rekap">
+                <div>
+                    <span class="menu-icon">📊</span>
+                    <h3>Data Rekap & Aksi Admin</h3>
+                    <p>Melihat semua daftar aktif jadwal peminjaman perangkat atau membersihkan jadwal.</p>
+                </div>
+            </a>
+
+        </div>
+
+        <a href="index.html" class="btn-logout">🚪 Keluar / Logout</a>
+
+    </div>
+
+</body>
+
+</html>

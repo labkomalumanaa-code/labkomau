@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Booking - LabKom Al Umanaa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: #1565c0;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .navigation-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            background: #657786;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #4b5863;
+        }
+
+        /* TOMBOL SAKTI HAPUS MASSAL */
+        .btn-bulk-delete {
+            background: #e53935;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.2);
+            transition: 0.2s;
+            display: none; /* Muncul hanya saat ada yang dicentang */
+        }
+
+        .btn-bulk-delete:hover {
+            background: #b71c1c;
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .table-container h2 {
+            color: #1565c0;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* Ukuran Checkbox biar gampang diklik */
+        .check-box-style {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .badge-pc-kbm { background: #1565c0; }
+        .badge-pc-non { background: #34495e; }
+        .badge-gd-kbm { background: #9b59b6; }
+        .badge-gd-non { background: #2c3e50; }
+
+        .btn-action {
+            background: #657786;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-action:hover {
+            background: #4b5863;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #718096;
+            font-style: italic;
+            padding: 30px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>DATA REKAP JADWAL LABKOM</h1>
+        <p>Pondok Pesantren Modern Al Umanaa</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="navigation-bar">
+            <a href="dashboard.html" class="btn-back">⬅ Kembali ke Dashboard</a>
+            <button id="btnHapusMasal" class="btn-bulk-delete" onclick="eksekusiHapusMasal()">🗑️ Selesaikan Perangkat Terpilih (<span id="jumlahTerpilih">0</span>)</button>
+        </div>
+
+        <div class="table-container">
+            <h2>Daftar Aktif Penggunaan Ruang & Perangkat Lab</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 4%; text-align: center;"><input type="checkbox" id="checkAll" class="check-box-style" onchange="toggleSemuaCentang(this)"></th>
+                        <th style="width: 5%;">No</th>
+                        <th style="width: 23%;">Nama Lengkap / Mapel</th>
+                        <th style="width: 14%;">Kelas / Kamar</th>
+                        <th style="width: 16%;">Kategori Jalur</th>
+                        <th style="width: 10%;">ID Alat</th>
+                        <th style="width: 10%;">Hari</th>
+                        <th style="width: 18%;">Waktu Sesi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBooking">
+                    </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        let listBooking = JSON.parse(localStorage.getItem('data_labkom')) || [];
+
+        function tampilkanData() {
+            const tbody = document.getElementById('tabelBooking');
+            tbody.innerHTML = ''; 
+            
+            // Reset status checkAll di atas
+            document.getElementById('checkAll').checked = false;
+            updateTombolHapusMasal();
+
+            if (listBooking.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="no-data">📭 Belum ada jadwal peminjaman perangkat untuk minggu ini.</td></tr>`;
+                return;
+            }
+
+            listBooking.forEach((data, index) => {
+                let row = document.createElement('tr');
+                
+                let badgeClass = 'badge-pc-kbm';
+                let namaKategoriDisplay = data.jenis;
+
+                if (data.jenis === 'PC (Non-KBM)') {
+                    badgeClass = 'badge-pc-non';
+                } else if (data.jenis === 'Laptop' || data.jenis === 'Chromebook') {
+                    if (data.jam.startsWith('KBM')) {
+                        badgeClass = 'badge-gd-kbm';
+                        namaKategoriDisplay = `${data.jenis} (KBM)`;
+                    } else {
+                        badgeClass = 'badge-gd-non';
+                        namaKategoriDisplay = `${data.jenis} (Non-KBM)`;
+                    }
+                }
+
+                let displayJam = data.jam.replace('KBM ', '').replace('Non-KBM ', '');
+
+                row.innerHTML = `
+                    <td style="text-align: center;"><input type="checkbox" class="check-box-style row-checkbox" value="${data.id}" onchange="updateTombolHapusMasal()"></td>
+                    <td>${index + 1}</td>
+                    <td><b>${data.nama}</b></td>
+                    <td>${data.kelas}</td>
+                    <td><span class="badge ${badgeClass}">${namaKategoriDisplay}</span></td>
+                    <td><span style="color:#1565c0; font-weight:bold;">${data.deviceId}</span></td>
+                    <td><span style="color:#e67e22; font-weight:bold;">${data.tanggal}</span></td>
+                    <td><span style="font-size:13px; color:#2d3748;">${displayJam}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // FUNGSI CENTANG SEMUA ATAU LEPAS SEMUA
+        function toggleSemuaCentang(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = masterCheckbox.checked;
+            });
+            updateTombolHapusMasal();
+        }
+
+        // HITUNG JUMLAH YANG DICENTANG & ATUR LOGIKA TOMBOL RED
+        function updateTombolHapusMasal() {
+            const checkboxesTerpilih = document.querySelectorAll('.row-checkbox:checked');
+            const btnHapus = document.getElementById('btnHapusMasal');
+            const labelJumlah = document.getElementById('jumlahTerpilih');
+
+            labelJumlah.innerText = checkboxesTerpilih.length;
+
+            if (checkboxesTerpilih.length > 0) {
+                btnHapus.style.display = 'inline-block';
+            } else {
+                btnHapus.style.display = 'none';
+            }
+        }
+
+        // EKSEKUSI PEMBERSIHAN BORONGAN
+        function eksekusiHapusMasal() {
+            const checkboxesTerpilih = document.querySelectorAll('.row-checkbox:checked');
+            let idsMauDihapus = Array.from(checkboxesTerpilih).map(cb => cb.value);
+
+            let konfirmasi = confirm(`Apakah Anda yakin ingin menyelesaikan dan menghapus ${idsMauDihapus.length} perangkat yang dipilih sekaligus?`);
+            
+            if (konfirmasi) {
+                // Filter membuang semua data yang ID-nya ada di dalam daftar centang
+                listBooking = listBooking.filter(b => !idsMauDihapus.includes(b.id));
+                
+                // Simpan perubahan ke memori browser
+                localStorage.setItem('data_labkom', JSON.stringify(listBooking));
+                
+                // Refresh tabel data baru
+                tampilkanData();
+                alert(`Sukses! ${idsMauDihapus.length} perangkat berhasil diselesaikan serentak!`);
+            }
+        }
+
+        tampilkanData();
+    </script>
+
+</body>
+
+</html>
